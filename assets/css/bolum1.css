@@ -1,0 +1,115 @@
+/* ============================================================
+   Bölüm 1: Çiftlikte Bir Ders — bölüme özel stiller
+   (kümes, civciv kovalamacası, GÜM! ve kurtarma sahnesi)
+   ============================================================ */
+
+/* ---------- kümes ---------- */
+.coop{position:absolute; bottom:19%; width:30vmin; height:24vmin;}
+.coop .roofC{position:absolute; top:0; left:-4%; right:-4%; height:34%;
+  background:#9C5B38; clip-path:polygon(50% 0,100% 100%,0 100%); z-index:2;}
+.coop .bodyC{position:absolute; inset:30% 0 0; background:#D9A05B;
+  border-radius:4px 4px 0 0; box-shadow:inset 0 -3vmin 0 rgba(0,0,0,.06);}
+.coop .bodyC::before{content:""; position:absolute; inset:0;
+  background:repeating-linear-gradient(0deg,transparent 0 3.2vmin,rgba(0,0,0,.08) 3.2vmin 3.4vmin);}
+.coop .holeC{position:absolute; top:38%; left:50%; transform:translateX(-50%);
+  width:34%; height:52%; background:#4A3120; border-radius:10vmin 10vmin 0 0; overflow:hidden;}
+.coop .rampC{position:absolute; bottom:-4%; left:50%; transform:translateX(-50%) perspective(20vmin) rotateX(48deg);
+  width:30%; height:26%; background:#B07A44; border-radius:4px;
+  background-image:repeating-linear-gradient(0deg,transparent 0 1.4vmin,rgba(0,0,0,.12) 1.4vmin 1.7vmin);}
+
+/* kümes kapısı — tel örgülü, çarpınca kapanır, dokununca açılır */
+.coop .doorC{
+  position:absolute; top:38%; left:50%; width:34%; height:52%;
+  transform-origin:left center; transform:translateX(-50%) rotateY(78deg);
+  background:linear-gradient(#C08A50,#A9743E);
+  border:0.5vmin solid #7A4E28; border-radius:8vmin 8vmin 0 0;
+  background-image:
+    repeating-linear-gradient(45deg,transparent 0 1.6vmin,rgba(60,40,20,.35) 1.6vmin 1.9vmin),
+    repeating-linear-gradient(-45deg,transparent 0 1.6vmin,rgba(60,40,20,.35) 1.6vmin 1.9vmin);
+  z-index:3; cursor:pointer; transition:transform .5s ease;
+}
+.coop.closed .doorC{transform:translateX(-50%) rotateY(0deg);}
+.coop.slam .doorC{animation:slam .6s ease forwards;}
+@keyframes slam{
+  0%{transform:translateX(-50%) rotateY(78deg);}
+  55%{transform:translateX(-50%) rotateY(-6deg);}
+  75%{transform:translateX(-50%) rotateY(3deg);}
+  100%{transform:translateX(-50%) rotateY(0deg);}
+}
+.coop.shake{animation:coopShake .5s ease;}
+@keyframes coopShake{
+  20%{transform:translateX(-1vmin) rotate(-1deg);}
+  45%{transform:translateX(1vmin) rotate(1deg);}
+  70%{transform:translateX(-.6vmin);}
+}
+
+/* kümesin içinde mahsur kalan Dada */
+.trapped{
+  position:absolute; z-index:1;
+  animation:trappedWiggle 1.8s ease-in-out infinite;
+  filter:brightness(.75);
+}
+@keyframes trappedWiggle{50%{transform:translateY(-.8vmin) rotate(-3deg);}}
+
+/* GÜM! yazısı */
+.gum{
+  position:absolute; font-size:clamp(34px,10vmin,80px); font-weight:bold; color:#E8452C;
+  text-shadow:0 3px 0 #8E1F0D, 0 6px 14px rgba(0,0,0,.3);
+  transform:scale(0) rotate(-12deg); pointer-events:none; z-index:10;
+}
+.gum.bang{animation:gumBang 1.6s cubic-bezier(.2,2,.4,1) forwards;}
+@keyframes gumBang{
+  0%{transform:scale(0) rotate(-12deg);}
+  30%{transform:scale(1.25) rotate(6deg);}
+  45%{transform:scale(1) rotate(-2deg); opacity:1;}
+  80%{opacity:1;}
+  100%{transform:scale(1) translateY(-3vmin); opacity:0;}
+}
+
+/* ---------- civciv kovalamacası ---------- */
+.fleeing{animation:flee 5s linear infinite;}
+@keyframes flee{
+  0%{transform:translateX(0);}
+  20%{transform:translateX(-16vw) translateY(-1.5vmin);}
+  40%{transform:translateX(-30vw);}
+  60%{transform:translateX(-14vw) translateY(-2vmin) scaleX(-1);}
+  80%{transform:translateX(4vw) scaleX(-1);}
+  100%{transform:translateX(0);}
+}
+.chasing{animation:chase 5s linear infinite;}
+@keyframes chase{
+  0%{transform:translateX(0) rotate(0);}
+  10%{transform:translateX(-8vw) rotate(-5deg);}
+  25%{transform:translateX(-22vw) rotate(4deg);}
+  45%{transform:translateX(-32vw) rotate(-4deg);}
+  60%{transform:translateX(-16vw) scaleX(-1) rotate(4deg);}
+  85%{transform:translateX(2vw) scaleX(-1) rotate(-4deg);}
+  100%{transform:translateX(0) rotate(0);}
+}
+.panicMark{position:absolute; font-size:clamp(14px,3vmin,22px); animation:panic .7s ease-in-out infinite; pointer-events:none;}
+@keyframes panic{50%{transform:translateY(-1.4vmin) scale(1.15);}}
+
+/* toz bulutu */
+.dust{position:absolute; font-size:clamp(14px,3.4vmin,26px); opacity:.7;
+  animation:dustPuff 1.2s ease-out infinite; pointer-events:none;}
+@keyframes dustPuff{
+  0%{opacity:0; transform:scale(.4) translateX(0);}
+  40%{opacity:.6;}
+  100%{opacity:0; transform:scale(1.3) translateX(3vmin);}
+}
+
+/* kurtarma sahnesinde parlayan ipucu */
+.tapMe{animation:tapPulse 1.4s ease-in-out infinite;}
+@keyframes tapPulse{50%{filter:brightness(1.25) drop-shadow(0 0 2vmin #FFE9A8);}}
+
+/* kucaklaşma */
+.hugPair{animation:hugSway 3s ease-in-out infinite;}
+@keyframes hugSway{50%{transform:rotate(2.5deg);}}
+
+/* konfeti (kurtarma kutlaması) */
+.confetti{position:absolute; font-size:clamp(13px,2.6vmin,20px); pointer-events:none;
+  animation:confFall 1.6s ease-in forwards;}
+@keyframes confFall{
+  0%{opacity:1; transform:translateY(0) rotate(0);}
+  100%{opacity:0; transform:translateY(16vmin) rotate(260deg);}
+}

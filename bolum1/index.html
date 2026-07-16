@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1. Bölüm: Çiftlikte Bir Ders — Berrak ile Dada</title>
+<link rel="stylesheet" href="../assets/css/storybook.css">
+<link rel="stylesheet" href="../assets/css/bolum1.css">
+</head>
+<body>
+
+<!-- =============== SVG karakter kütüphanesi (kediler) =============== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- yavru kedi (sağa bakar) -->
+    <g id="cat">
+      <path d="M20 80 Q4 74 9 57 Q11 49 19 51" stroke="var(--furD,#D8A868)" stroke-width="6"
+            fill="none" stroke-linecap="round"/>
+      <ellipse cx="36" cy="93" rx="7" ry="4" fill="var(--furC,#E8B778)"/>
+      <ellipse cx="62" cy="93" rx="7" ry="4" fill="var(--furC,#E8B778)"/>
+      <ellipse cx="48" cy="74" rx="27" ry="19" fill="var(--furC,#E8B778)"/>
+      <ellipse cx="54" cy="82" rx="13" ry="8" fill="#FFF6EA" opacity=".8"/>
+      <polygon points="63,36 67,15 78,29" fill="var(--furC,#E8B778)"/>
+      <polygon points="91,36 87,15 76,29" fill="var(--furC,#E8B778)"/>
+      <polygon points="66,33 68,22 74,29" fill="#F5B8B0"/>
+      <polygon points="88,33 86,22 80,29" fill="#F5B8B0"/>
+      <circle cx="77" cy="46" r="17" fill="var(--furC,#E8B778)"/>
+      <path d="M64 38 q4 -3 8 -1 M86 37 q4 -1 6 2" stroke="var(--furD,#D8A868)" stroke-width="2.4"
+            fill="none" stroke-linecap="round"/>
+      <circle cx="71" cy="45" r="2.7" fill="#2E241C"/>
+      <circle cx="84" cy="45" r="2.7" fill="#2E241C"/>
+      <circle cx="72" cy="44" r="1" fill="#fff"/>
+      <circle cx="85" cy="44" r="1" fill="#fff"/>
+      <polygon points="74,51 81,51 77.5,55.5" fill="#E8938A"/>
+      <path d="M77.5 55.5 q-3.5 4 -7 1.5 M77.5 55.5 q3.5 4 7 1.5"
+            stroke="#2E241C" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M62 49 L48 46 M62 53 L49 54 M92 49 L100 46 M92 53 L100 55"
+            stroke="#8A7160" stroke-width="1.4" stroke-linecap="round"/>
+    </g>
+    <!-- civciv -->
+    <g id="chick">
+      <ellipse cx="50" cy="66" rx="22" ry="20" fill="#FFDE6B"/>
+      <circle cx="50" cy="40" r="15" fill="#FFDE6B"/>
+      <circle cx="45" cy="38" r="2.4" fill="#2E241C"/>
+      <circle cx="55" cy="38" r="2.4" fill="#2E241C"/>
+      <polygon points="47,45 53,45 50,51" fill="#F59B42"/>
+      <ellipse cx="32" cy="64" rx="8" ry="12" fill="#F5C94C" transform="rotate(18 32 64)"/>
+      <ellipse cx="68" cy="64" rx="8" ry="12" fill="#F5C94C" transform="rotate(-18 68 64)"/>
+      <rect x="42" y="84" width="4" height="9" rx="2" fill="#F59B42"/>
+      <rect x="54" y="84" width="4" height="9" rx="2" fill="#F59B42"/>
+    </g>
+    <!-- anne tavuk -->
+    <g id="hen">
+      <ellipse cx="46" cy="62" rx="30" ry="26" fill="#F3E4CE"/>
+      <ellipse cx="34" cy="60" rx="14" ry="18" fill="#E8D3B4" transform="rotate(20 34 60)"/>
+      <circle cx="74" cy="36" r="14" fill="#F3E4CE"/>
+      <path d="M66 24 q2 -8 7 -2 q2 -8 7 -2 q3 -6 6 0 l-3 6 q-8 4 -17 -2z" fill="#E8452C"/>
+      <circle cx="78" cy="34" r="2.6" fill="#2E241C"/>
+      <polygon points="86,36 96,39 86,43" fill="#F5A03C"/>
+      <path d="M84 44 q3 4 0 7" stroke="#E8452C" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <rect x="36" y="86" width="5" height="10" rx="2.5" fill="#F5A03C"/>
+      <rect x="52" y="86" width="5" height="10" rx="2.5" fill="#F5A03C"/>
+    </g>
+  </defs>
+</svg>
+
+<a id="homeLink" class="btn" href="../index.html">📚 Kitaplık</a>
+<div id="book" aria-live="polite"></div>
+
+<div id="nav">
+  <button id="prevBtn" aria-label="Önceki sayfa">◀ Geri</button>
+  <div id="dots" aria-hidden="true"></div>
+  <button id="nextBtn" aria-label="Sonraki sayfa">İleri ▶</button>
+</div>
+
+<script src="../assets/js/storybook.js"></script>
+<script>
+"use strict";
+const {actor, clouds, stars, hearts, snd} = Storybook;
+
+Storybook.chars({
+  berrak:{sym:"cat", fur:"#F6E7D3", furD:"#DCC3A4", say:"Miyav! Ben Berrak! 🌼"},
+  dada:  {sym:"cat", fur:"#E8B778", furD:"#C99552", say:"Miyav miyav! Ben Dada! ⭐"},
+  ay:    {sym:"cat", fur:"#D9CBBA", furD:"#B8A78F", say:"Yavrularım benim... 💛"},
+  beyaz: {sym:"cat", fur:"#FFFFFF", furD:"#DEDAD2", say:"Merhaba canlarım! 🌸"},
+  baris: {sym:"cat", fur:"#A8865E", furD:"#8A6B44", say:"Hadi bakalım! 💪"},
+  hen:   {sym:"hen", say:"Gıt gıt gıdaak! 🐔"},
+  chick: {sym:"chick", say:"Cik cik cik! 🐤"}
+});
+
+/* kümes parçası (kapı açık ya da kapalı başlar) */
+function coop(style, closed){
+  return `<div class="coop ${closed ? "closed" : ""}" style="${style}">
+    <div class="bodyC"></div><div class="holeC"></div><div class="roofC"></div>
+    <div class="rampC"></div><div class="doorC" role="button" tabindex="0" aria-label="kümes kapısı"></div>
+  </div>`;
+}
+
+const pages=[
+/* 0 — kapak */
+{ sky:"morning", html:`
+  <div class="sun" style="top:8%; left:8%"></div>
+  ${clouds(3,25)}
+  <div class="barn" style="right:6%; transform:scale(.8)"><div class="roof"></div><div class="body"></div><div class="win l"></div><div class="win r"></div><div class="door"></div></div>
+  <div class="titleWrap">
+    <h1>Çiftlikte Bir Ders 🐱</h1>
+    <div class="sub">1. Bölüm — Berrak ile Dada</div>
+    <div class="dedic">Duru ve Derin için, sevgiyle… 💕</div>
+    <button class="startBtn" data-act="start">Masalı Başlat ✨</button>
+  </div>
+  ${actor("berrak","","left:12%; bottom:21%; width:16vmin; height:16vmin","hop")}
+  ${actor("dada","flip","right:12%; bottom:21%; width:15vmin; height:15vmin","hop")}
+  <div class="ground"></div>`,
+  text:`Kedilere dokunursan seninle konuşurlar! 🐱`},
+
+/* 1 — sabah */
+{ sky:"morning", html:`
+  <div class="sun" style="top:7%; left:6%"></div>
+  ${clouds(3,25)}
+  <div class="barn" style="left:5%"><div class="roof"></div><div class="body"></div><div class="win l"></div><div class="win r"></div><div class="door"></div></div>
+  <div style="position:absolute; left:34%; bottom:19%; font-size:9vmin" aria-hidden="true">🌾</div>
+  ${actor("berrak","flip","left:46%; bottom:20%; width:14vmin; height:14vmin","bob")}
+  ${actor("dada","flip","left:66%; bottom:20%; width:13vmin; height:13vmin","hop")}
+  <div class="butterfly" style="left:60%; top:28%">🦋</div>
+  <div class="ground"></div>`,
+  text:`Güneş, bulutların arasından ışıklarını süzüyordu. Büyük kırmızı ahırın yanında, saman balyalarının arasında iki yavru kedi koşturuyordu: yumuşacık tüylü <b>Berrak</b> ve ondan bile hareketli, yaramaz <b>Dada</b>! <span class="speak">"Berrak, hadi oyun oynayalım!"</span> diye miyavladı Dada. 🐾`},
+
+/* 2 — civcivler görünür */
+{ sky:"day", html:`
+  <div class="sun" style="top:6%; right:8%"></div>
+  ${clouds(4,28)}
+  ${coop("left:6%")}
+  ${actor("hen","flip","left:32%; bottom:20%; width:14vmin; height:14vmin","bob")}
+  ${actor("chick","flip","left:44%; bottom:19%; width:7vmin; height:7vmin","hop")}
+  ${actor("chick","flip","left:51%; bottom:19%; width:6.5vmin; height:6.5vmin","hop")}
+  ${actor("chick","flip","left:58%; bottom:19%; width:7vmin; height:7vmin","hop")}
+  ${actor("dada","","left:78%; bottom:20%; width:13vmin; height:13vmin","hop")}
+  ${actor("berrak","","left:88%; bottom:20%; width:13vmin; height:13vmin","bob")}
+  <div class="ground"></div>`,
+  text:`Dada kuyruğunu dikleştirip çevresine bakındı ve kümesten çıkan sarı civcivleri fark etti! <span class="speak">"Buldum! Civcivlerle oynayalım!"</span> Berrak hemen ciddileşti: <span class="speak">"Dada, civcivler bizimle oyun oynamaz. Onları korkutabiliriz!"</span> 🐤`},
+
+/* 3 — kovalamaca! */
+{ sky:"day", html:`
+  <div class="sun" style="top:6%; right:8%"></div>
+  ${clouds(3,24)}
+  ${coop("left:4%")}
+  <div class="panicMark" style="left:38%; bottom:34%">💦</div>
+  <div class="panicMark" style="left:52%; bottom:36%; animation-delay:.3s">❗</div>
+  ${actor("chick","flip fleeing","left:42%; bottom:19%; width:7vmin; height:7vmin")}
+  ${actor("chick","flip fleeing","left:52%; bottom:19%; width:6.5vmin; height:6.5vmin;animation-delay:-1.2s")}
+  ${actor("chick","flip fleeing","left:62%; bottom:19%; width:7vmin; height:7vmin;animation-delay:-2.6s")}
+  ${actor("dada","flip chasing","left:82%; bottom:19%; width:13vmin; height:13vmin")}
+  <div class="dust" style="left:86%; bottom:19%">💨</div>
+  ${actor("berrak","","left:90%; bottom:22%; width:12vmin; height:12vmin","bob")}
+  <div class="ground"></div>`,
+  text:`Ama Dada çoktan koşmaya başlamıştı bile! <span class="speak">"Sadece yakalamaca oynayacağım!"</span> Civcivler panikle kaçışıyor, Dada patilerini hızlı hızlı atarak peşlerinden koşuyordu. Ama hesaba katmadığı bir şey vardı: <b>kümesin kapısı açıktı!</b> 😼💨`},
+
+/* 4 — GÜM! kapı kapanır */
+{ sky:"day", html:`
+  <div class="sun" style="top:6%; right:8%"></div>
+  ${clouds(3,24)}
+  ${coop("left:30%","open")}
+  ${actor("dada","trapped locked flip","left:41.5%; bottom:32%; width:8vmin; height:8vmin")}
+  <div class="gum" id="gumText" style="left:34%; top:22%">GÜM!</div>
+  ${actor("berrak","","left:58%; bottom:20%; width:13vmin; height:13vmin","hop")}
+  ${actor("chick","flip","left:16%; bottom:19%; width:6.5vmin; height:6.5vmin","hop")}
+  ${actor("chick","flip","left:23%; bottom:19%; width:7vmin; height:7vmin","hop")}
+  <div class="ground"></div>`,
+  text:`Civcivler hızla kümese girince Dada da hızını alamayıp peşlerinden daldı. O anda bir <span class="speak">"GÜM!"</span> sesi duyuldu. Kapı kapanmıştı — <b>Dada içeride mahsur kalmıştı!</b> Berrak telaşla koştu: <span class="speak">"Dada! İyi misin?"</span> <span class="speak">"Kapı kapandı, çıkamıyorum!"</span> 😿`,
+  onShow(scene){
+    const c=scene.querySelector(".coop"), g=scene.querySelector("#gumText");
+    c.classList.remove("closed","slam","shake"); g.classList.remove("bang");
+    void c.offsetWidth;
+    setTimeout(()=>{
+      c.classList.add("slam","shake"); g.classList.add("bang"); snd.gum();
+      setTimeout(()=>{c.classList.remove("slam"); c.classList.add("closed");},700);
+    },700);
+  }},
+
+/* 5 — kurtarma (etkileşimli!) */
+{ sky:"day", html:`
+  <div class="sun" style="top:6%; left:8%"></div>
+  ${clouds(3,24)}
+  ${coop("left:30%","closed")}
+  ${actor("dada","trapped locked flip trappedDada","left:41.5%; bottom:32%; width:8vmin; height:8vmin")}
+  ${actor("dada","freeDada flip","left:48%; bottom:20%; width:13vmin; height:13vmin","hop")}
+  ${actor("baris","","left:8%; bottom:21%; width:17vmin; height:17vmin","bob")}
+  ${actor("beyaz","","left:20%; bottom:20%; width:14vmin; height:14vmin","bob")}
+  ${actor("berrak","","left:64%; bottom:20%; width:13vmin; height:13vmin","bob")}
+  <div class="ground"></div>`,
+  text:`Tam o sırada çiftliğin bilge ve güçlü kedisi <b>Barış abi</b> geldi, yanında da <b>Beyaz teyze</b>! <span class="speak">"Dadacım, seni uyarmıştık..."</span> dedi gülümseyerek. Beyaz teyze patisini kapıya uzattı... <b>Sen de yardım et: kümesin kapısına dokun, Dada'yı kurtaralım!</b> 👆`,
+  init(scene){
+    const coopEl=scene.querySelector(".coop"), door=scene.querySelector(".doorC");
+    const trapped=scene.querySelector(".trappedDada"), free=scene.querySelector(".freeDada");
+    free.style.display="none";
+    door.classList.add("tapMe");
+    const rescue=()=>{
+      if(!coopEl.classList.contains("closed"))return;
+      coopEl.classList.remove("closed"); door.classList.remove("tapMe");
+      snd.yay();
+      setTimeout(()=>{
+        trapped.style.display="none";
+        free.style.display="";
+        free.classList.add("jump");
+        snd.miyav();
+        const sky=scene.querySelector(".sky");
+        for(let i=0;i<12;i++){
+          const cf=document.createElement("div");
+          cf.className="confetti";
+          cf.textContent=["🎉","⭐","💛","✨"][i%4];
+          cf.style.left=(38+Math.random()*24)+"%";
+          cf.style.top=(20+Math.random()*20)+"%";
+          cf.style.animationDelay=(Math.random()*.5)+"s";
+          sky.appendChild(cf);
+          setTimeout(()=>cf.remove(),2400);
+        }
+        const p=scene.querySelector(".panel p");
+        p.innerHTML=`<span class="speak">"Bir daha yapmayacağım!"</span> dedi Dada, kümesten sıçrayarak çıkıp kardeşine sarılırken. <b>Aferin, Dada'yı kurtardın!</b> 🎉`;
+      },450);
+    };
+    door.addEventListener("click",rescue);
+    door.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();rescue();}});
+  }},
+
+/* 6 — özür ve ders */
+{ sky:"day", html:`
+  <div class="sun" style="top:6%; left:8%"></div>
+  ${clouds(4,26)}
+  ${actor("baris","","left:10%; bottom:21%; width:18vmin; height:18vmin","bob")}
+  <div class="hugPair" style="position:absolute; left:38%; bottom:20%; width:26vmin; height:14vmin">
+    ${actor("dada","","left:0; bottom:0; width:13vmin; height:13vmin")}
+    ${actor("berrak","flip","left:11vmin; bottom:0; width:13vmin; height:13vmin")}
+  </div>
+  ${hearts(3,48,36)}
+  ${actor("chick","flip","left:70%; bottom:19%; width:6.5vmin; height:6.5vmin","hop")}
+  ${actor("chick","flip","left:77%; bottom:19%; width:7vmin; height:7vmin","hop")}
+  ${actor("hen","flip","left:85%; bottom:20%; width:13vmin; height:13vmin","bob")}
+  <div class="ground"></div>`,
+  text:`Barış abi yumuşak bir sesle konuştu: <span class="speak">"Dada, eğlenmek isterken başkalarını korkutabileceğimizi düşünmeliyiz."</span> Dada başını eğdi: <span class="speak">"Haklısın... Civcivlerden özür dilemeliyim."</span> Berrak gülümsedi: <span class="speak">"Öğrendin işte! Başkalarına saygı göstermek çok önemli."</span> 💛`},
+
+/* 7 — gün batımı, son */
+{ sky:"sunset", html:`
+  <div class="sun" style="bottom:24%; left:44%; background:radial-gradient(circle at 35% 35%,#FFC97A,#FF8E5A); box-shadow:0 0 50px 16px rgba(255,142,90,.5)"></div>
+  ${clouds(3,20)}
+  <div class="theEnd">SON 🌅</div>
+  ${actor("ay","","left:8%; bottom:21%; width:15vmin; height:15vmin","bob")}
+  ${actor("beyaz","","left:20%; bottom:20%; width:14vmin; height:14vmin","bob")}
+  ${actor("berrak","flip","left:60%; bottom:20%; width:13vmin; height:13vmin","hop")}
+  ${actor("dada","flip","left:74%; bottom:20%; width:12.5vmin; height:12.5vmin","hop")}
+  ${hearts(2,68,34)}
+  <div class="ground"></div>`,
+  text:`Güneş batarken küçük kediler oyunlarına devam ettiler… ama bu kez <b>herkesin mutlu olacağı</b> bir şekilde! Dada artık oyun oynarken dikkatli olacağını ve başkalarının duygularını önemsemesi gerektiğini öğrenmişti. 🌅 <b><a href="../bolum2/index.html" style="color:var(--accent)">2. Bölüm'e geç →</a></b>`,
+  restart:true}
+];
+
+Storybook.init({pages});
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+/* ============================================================
+   Duru ile Derin'in Masal Kitaplığı — ortak masal motoru stilleri
+   ============================================================ */
+:root{
+  --sky-morning-a:#BDE3F5; --sky-morning-b:#EAF7E3;
+  --sky-day-a:#8ECDEB;     --sky-day-b:#CDEDF7;
+  --sky-sunset-a:#FF9A76;  --sky-sunset-b:#FFD3A0;
+  --sky-night-a:#26315E;   --sky-night-b:#4A5590;
+  --grass:#7FC383; --grass-dark:#5EA968;
+  --wool:#FFF9EF; --ink:#4A3C2E; --sun:#FFD66B;
+  --panel:#FFF9EF; --accent:#E8845C; --accent-dark:#B85E3C;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%; margin:0; overflow:hidden;}
+body{
+  font-family:"Comic Sans MS","Segoe UI Rounded","Segoe UI",sans-serif;
+  color:var(--ink); background:#26315E;
+  user-select:none;
+}
+
+#book{position:fixed; inset:0;}
+.scene{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  opacity:0; pointer-events:none; transition:opacity .8s ease;
+}
+.scene.active{opacity:1; pointer-events:auto;}
+
+.sky{position:relative; flex:1; overflow:hidden;}
+.scene[data-sky="morning"] .sky{background:linear-gradient(var(--sky-morning-a),var(--sky-morning-b));}
+.scene[data-sky="day"]     .sky{background:linear-gradient(var(--sky-day-a),var(--sky-day-b));}
+.scene[data-sky="sunset"]  .sky{background:linear-gradient(#B96A9A 0%,var(--sky-sunset-a) 45%,var(--sky-sunset-b) 100%);}
+.scene[data-sky="night"]   .sky{background:linear-gradient(#161D3E,var(--sky-night-a) 60%,var(--sky-night-b));}
+
+.ground{
+  position:absolute; left:0; right:0; bottom:0; height:26%;
+  background:linear-gradient(var(--grass),var(--grass-dark));
+  border-radius:50% 50% 0 0 / 30px 30px 0 0;
+}
+.scene[data-sky="sunset"] .ground{filter:hue-rotate(-14deg) brightness(.92);}
+.scene[data-sky="night"]  .ground{filter:brightness(.45) saturate(.7);}
+
+/* ---------- metin paneli ---------- */
+.panel{
+  background:var(--panel); padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));
+  border-top:4px dashed #E5CFA8;
+  display:flex; flex-direction:column; gap:8px; align-items:center;
+  min-height:26vh; max-height:44vh; justify-content:center;
+}
+.panel p{
+  margin:0; max-width:34em; text-align:center;
+  font-size:clamp(15px,2.6vmin,21px); line-height:1.55;
+}
+.panel .speak{color:var(--accent); font-weight:bold;}
+
+/* ---------- gezinme ---------- */
+#nav{
+  position:fixed; left:0; right:0; bottom:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));
+  pointer-events:none;
+}
+#nav button,.btn{
+  pointer-events:auto; border:none; cursor:pointer;
+  background:var(--accent); color:#fff;
+  font-family:inherit; font-size:clamp(16px,3vmin,22px); font-weight:bold;
+  padding:10px 22px; border-radius:999px;
+  box-shadow:0 4px 0 var(--accent-dark); transition:transform .1s;
+  text-decoration:none; display:inline-block;
+}
+#nav button:active,.btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--accent-dark);}
+#nav button:focus-visible,.btn:focus-visible{outline:3px solid #fff; outline-offset:2px;}
+#nav button[disabled]{opacity:0; pointer-events:none;}
+#homeLink{
+  position:fixed; top:10px; left:10px; z-index:60;
+  font-size:clamp(13px,2.4vmin,17px); padding:6px 14px;
+  background:rgba(255,249,239,.9); color:var(--ink);
+  box-shadow:0 3px 0 rgba(0,0,0,.15);
+}
+#dots{display:flex; gap:7px;}
+#dots i{width:10px; height:10px; border-radius:50%; background:#fff; opacity:.45; transition:.3s;}
+#dots i.on{opacity:1; transform:scale(1.35); background:var(--sun);}
+
+/* ---------- güneş ve ay ---------- */
+.sun{
+  position:absolute; width:11vmin; height:11vmin; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#FFE9A8,var(--sun));
+  box-shadow:0 0 40px 12px rgba(255,214,107,.55);
+  animation:sunbreathe 5s ease-in-out infinite;
+}
+@keyframes sunbreathe{50%{transform:scale(1.06);}}
+.moon{
+  position:absolute; width:9vmin; height:9vmin; border-radius:50%;
+  background:radial-gradient(circle at 38% 34%,#FFFDF2,#F3E9C8);
+  box-shadow:0 0 34px 10px rgba(243,233,200,.35);
+}
+.moon::after{content:""; position:absolute; width:2vmin; height:2vmin; border-radius:50%;
+  background:rgba(0,0,0,.06); left:28%; top:42%;
+  box-shadow:3vmin -1.6vmin 0 -.4vmin rgba(0,0,0,.05);}
+
+/* ---------- bulutlar ---------- */
+.cloud{
+  position:absolute; height:6vmin; width:15vmin; border-radius:999px; background:#fff;
+  opacity:.92; animation:drift linear infinite;
+}
+.cloud::before,.cloud::after{content:""; position:absolute; background:#fff; border-radius:50%;}
+.cloud::before{width:7vmin;height:7vmin; left:2vmin; top:-3.2vmin;}
+.cloud::after{width:5vmin;height:5vmin; left:7.5vmin; top:-2.2vmin;}
+@keyframes drift{from{transform:translateX(-25vw);} to{transform:translateX(115vw);}}
+
+/* ---------- yıldızlar ---------- */
+.star{position:absolute; width:.7vmin; height:.7vmin; background:#FFF6D8; border-radius:50%;
+  animation:twinkle 2.4s ease-in-out infinite;}
+@keyframes twinkle{50%{opacity:.15; transform:scale(.6);}}
+
+/* ---------- ahır ---------- */
+.barn{position:absolute; bottom:20%; width:26vmin; height:20vmin;}
+.barn .body{position:absolute; inset:32% 6% 0; background:#C96A4B; border-radius:6px 6px 0 0;}
+.barn .roof{position:absolute; top:0; left:0; right:0; height:42%;
+  background:#8E4B33; clip-path:polygon(50% 0,100% 100%,0 100%);}
+.barn .door{position:absolute; bottom:0; left:36%; width:28%; height:44%;
+  background:#7A4029; border-radius:8px 8px 0 0;}
+.barn .win{position:absolute; top:44%; width:16%; height:18%; background:#FFE9A8;
+  border-radius:4px; border:3px solid #8E4B33;}
+.barn .win.l{left:10%;} .barn .win.r{right:10%;}
+
+/* ---------- karakterler ---------- */
+.actor{position:absolute; cursor:pointer; transform-origin:50% 100%;}
+.actor svg{display:block; width:100%; height:100%; overflow:visible;}
+.actor.flip svg{transform:scaleX(-1);}
+.actor .bubble,.cloudAnimal .bubble{
+  position:absolute; left:50%; top:-2.2em; transform:translateX(-50%) scale(0);
+  background:#fff; color:var(--ink); font-weight:bold;
+  font-size:clamp(13px,2.4vmin,18px);
+  padding:.25em .8em; border-radius:999px; white-space:nowrap;
+  box-shadow:0 2px 6px rgba(0,0,0,.18); transition:transform .25s;
+  pointer-events:none; z-index:5;
+}
+.actor.talking .bubble,.cloudAnimal.talking .bubble{transform:translateX(-50%) scale(1);}
+.actor.jump{animation:jump .55s ease;}
+@keyframes jump{35%{transform:translateY(-4.5vmin) rotate(-4deg);} 70%{transform:translateY(0) rotate(2deg);}}
+.bob{animation:bob 2.6s ease-in-out infinite;}
+@keyframes bob{50%{transform:translateY(-1.1vmin);}}
+.hop{animation:hop 1.6s ease-in-out infinite;}
+@keyframes hop{0%,100%{transform:translateY(0);} 30%{transform:translateY(-2.4vmin);} 55%{transform:translateY(0);}}
+.sleepy{animation:sleepy 4s ease-in-out infinite;}
+@keyframes sleepy{50%{transform:scale(1.03,0.97);}}
+
+.zzz{position:absolute; font-weight:bold; color:#FFF6D8; opacity:0;
+  animation:zfloat 3.2s ease-in-out infinite; font-size:clamp(14px,3vmin,22px);}
+@keyframes zfloat{
+  0%{opacity:0; transform:translateY(0) rotate(0);}
+  25%{opacity:.9;}
+  100%{opacity:0; transform:translateY(-7vmin) rotate(14deg);}
+}
+
+/* ---------- bulut hayvanları ---------- */
+.cloudAnimal{position:absolute; cursor:pointer; opacity:.95; transition:transform .3s;}
+.cloudAnimal:active{transform:scale(1.08);}
+.cloudAnimal svg{width:100%; height:100%; overflow:visible;}
+
+/* ---------- göl ---------- */
+.lake{
+  position:absolute; bottom:6%; left:50%; transform:translateX(-50%);
+  width:70vmin; max-width:88vw; height:14vmin;
+  background:radial-gradient(ellipse at 50% 30%,#BDE8F5,#6FB9DB);
+  border-radius:50%; box-shadow:inset 0 4px 12px rgba(255,255,255,.5);
+  overflow:hidden; cursor:pointer;
+}
+.ripple{position:absolute; border:2px solid rgba(255,255,255,.7); border-radius:50%;
+  animation:ripple 2.6s ease-out infinite;}
+@keyframes ripple{from{transform:scale(.2); opacity:.9;} to{transform:scale(1.6); opacity:0;}}
+.splash{position:absolute; font-size:clamp(16px,3.4vmin,26px); pointer-events:none;
+  animation:splashUp .8s ease-out forwards;}
+@keyframes splashUp{
+  0%{opacity:1; transform:translateY(0) scale(.6);}
+  100%{opacity:0; transform:translateY(-9vmin) scale(1.2);}
+}
+
+/* ---------- kelebek ---------- */
+.butterfly{position:absolute; font-size:clamp(16px,3vmin,24px); animation:flutter 9s ease-in-out infinite;}
+@keyframes flutter{
+  0%,100%{transform:translate(0,0) rotate(-8deg);}
+  25%{transform:translate(9vmin,-5vmin) rotate(8deg);}
+  50%{transform:translate(2vmin,-9vmin) rotate(-6deg);}
+  75%{transform:translate(-7vmin,-4vmin) rotate(6deg);}
+}
+
+/* ---------- kapak ---------- */
+.titleWrap{position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:1.4vmin; text-align:center; padding:0 5vw 20vh;}
+.titleWrap h1{
+  margin:0; font-size:clamp(30px,8.5vmin,66px); color:#fff; letter-spacing:.02em;
+  text-shadow:0 3px 0 var(--accent), 0 7px 14px rgba(0,0,0,.18);
+  animation:titlePop 1s cubic-bezier(.2,1.6,.4,1) both;
+}
+.titleWrap .sub{
+  font-size:clamp(15px,3vmin,24px); color:#fff; background:rgba(232,132,92,.85);
+  padding:.3em 1.2em; border-radius:999px; animation:titlePop 1s .25s cubic-bezier(.2,1.6,.4,1) both;
+}
+.titleWrap .dedic{font-size:clamp(12px,2.2vmin,17px); color:#5C4A36; opacity:.85;
+  animation:titlePop 1s .5s both;}
+@keyframes titlePop{from{opacity:0; transform:scale(.4) translateY(4vmin);}}
+
+.startBtn{
+  margin-top:2vmin; border:none; cursor:pointer; font-family:inherit; font-weight:bold;
+  font-size:clamp(18px,3.6vmin,28px); color:#fff; background:var(--accent);
+  padding:.55em 1.6em; border-radius:999px; box-shadow:0 5px 0 var(--accent-dark);
+  animation:titlePop 1s .7s both, wiggle 2.4s 1.8s ease-in-out infinite;
+}
+.startBtn:active{transform:translateY(4px); box-shadow:0 1px 0 var(--accent-dark);}
+@keyframes wiggle{0%,100%{rotate:0deg;} 8%{rotate:-3deg;} 16%{rotate:3deg;} 24%{rotate:0deg;}}
+
+.theEnd{
+  position:absolute; left:50%; top:32%; transform:translateX(-50%);
+  font-size:clamp(26px,7vmin,54px); color:#FFF6D8; font-weight:bold;
+  text-shadow:0 3px 10px rgba(0,0,0,.4); animation:titlePop 1.2s .4s both;
+  white-space:nowrap;
+}
+
+/* ---------- kalpler ---------- */
+.heart{position:absolute; font-size:clamp(14px,3vmin,24px); opacity:0; pointer-events:none;
+  animation:heartFloat 3s ease-in-out infinite;}
+@keyframes heartFloat{
+  0%{opacity:0; transform:translateY(0) scale(.5);}
+  25%{opacity:1;}
+  100%{opacity:0; transform:translateY(-9vmin) scale(1.15) rotate(10deg);}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01s !important; animation-iteration-count:1 !important; transition-duration:.01s !important;}
+}
