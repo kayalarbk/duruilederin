@@ -7,13 +7,13 @@
 .coop{position:absolute; bottom:19%; width:30vmin; height:24vmin;}
 .coop .roofC{position:absolute; top:0; left:-4%; right:-4%; height:34%;
   background:#9C5B38; clip-path:polygon(50% 0,100% 100%,0 100%); z-index:2;}
-.coop .bodyC{position:absolute; inset:30% 0 0; background:#D9A05B;
+.coop .bodyC{position:absolute; inset:30% 0 0; background:#D9A05B; z-index:1;
   border-radius:4px 4px 0 0; box-shadow:inset 0 -3vmin 0 rgba(0,0,0,.06);}
 .coop .bodyC::before{content:""; position:absolute; inset:0;
   background:repeating-linear-gradient(0deg,transparent 0 3.2vmin,rgba(0,0,0,.08) 3.2vmin 3.4vmin);}
-.coop .holeC{position:absolute; top:38%; left:50%; transform:translateX(-50%);
+.coop .holeC{position:absolute; top:38%; left:50%; transform:translateX(-50%); z-index:1;
   width:34%; height:52%; background:#4A3120; border-radius:10vmin 10vmin 0 0; overflow:hidden;}
-.coop .rampC{position:absolute; bottom:-4%; left:50%; transform:translateX(-50%) perspective(20vmin) rotateX(48deg);
+.coop .rampC{position:absolute; bottom:-4%; left:50%; transform:translateX(-50%) perspective(20vmin) rotateX(48deg); z-index:1;
   width:30%; height:26%; background:#B07A44; border-radius:4px;
   background-image:repeating-linear-gradient(0deg,transparent 0 1.4vmin,rgba(0,0,0,.12) 1.4vmin 1.7vmin);}
 
@@ -90,7 +90,7 @@
 @keyframes panic{50%{transform:translateY(-1.4vmin) scale(1.15);}}
 
 /* toz bulutu */
-.dust{position:absolute; font-size:clamp(14px,3.4vmin,26px); opacity:.7;
+.dust{position:absolute; font-size:clamp(14px,3.4vmin,26px); opacity:.7; z-index:2;
   animation:dustPuff 1.2s ease-out infinite; pointer-events:none;}
 @keyframes dustPuff{
   0%{opacity:0; transform:scale(.4) translateX(0);}
@@ -103,7 +103,7 @@
 @keyframes tapPulse{50%{transform:translateX(-50%) rotateY(0deg) scale(1.06);}}
 
 /* kucaklaşma */
-.hugPair{animation:hugSway 3s ease-in-out infinite;}
+.hugPair{animation:hugSway 3s ease-in-out infinite; z-index:2;}
 @keyframes hugSway{50%{transform:rotate(2.5deg);}}
 
 /* konfeti (kurtarma kutlaması) */

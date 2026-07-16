@@ -38,6 +38,7 @@ body{
   position:absolute; left:0; right:0; bottom:0; height:26%;
   background:linear-gradient(var(--grass),var(--grass-dark));
   border-radius:50% 50% 0 0 / 30px 30px 0 0;
+  z-index:0; /* çayır her zaman en arkada: hayvanlar çimin önünde durur */
 }
 .scene[data-sky="sunset"] .ground{filter:hue-rotate(-14deg) brightness(.92);}
 .scene[data-sky="night"]  .ground{filter:brightness(.45) saturate(.7);}
@@ -119,7 +120,7 @@ body{
 @keyframes twinkle{50%{opacity:.15; transform:scale(.6);}}
 
 /* ---------- ahır ---------- */
-.barn{position:absolute; bottom:20%; width:26vmin; height:20vmin;}
+.barn{position:absolute; bottom:20%; width:26vmin; height:20vmin; z-index:1;}
 .barn .body{position:absolute; inset:32% 6% 0; background:#C96A4B; border-radius:6px 6px 0 0;}
 .barn .roof{position:absolute; top:0; left:0; right:0; height:42%;
   background:#8E4B33; clip-path:polygon(50% 0,100% 100%,0 100%);}
@@ -131,7 +132,7 @@ body{
 
 /* ---------- karakterler ---------- */
 .actor{position:absolute; cursor:pointer; transform-origin:50% 100%;
-  will-change:transform; backface-visibility:hidden;}
+  will-change:transform; backface-visibility:hidden; z-index:2;}
 .actor svg{display:block; width:100%; height:100%; overflow:visible;}
 .actor.flip svg{transform:scaleX(-1);}
 .actor .bubble,.cloudAnimal .bubble{
@@ -167,7 +168,7 @@ body{
 
 /* ---------- göl ---------- */
 .lake{
-  position:absolute; bottom:6%; left:50%; transform:translateX(-50%);
+  position:absolute; bottom:6%; left:50%; transform:translateX(-50%); z-index:1;
   width:70vmin; max-width:88vw; height:14vmin;
   background:radial-gradient(ellipse at 50% 30%,#BDE8F5,#6FB9DB);
   border-radius:50%; box-shadow:inset 0 4px 12px rgba(255,255,255,.5);
