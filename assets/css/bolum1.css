@@ -98,9 +98,9 @@
   100%{opacity:0; transform:scale(1.3) translateX(3vmin);}
 }
 
-/* kurtarma sahnesinde parlayan ipucu */
-.tapMe{animation:tapPulse 1.4s ease-in-out infinite;}
-@keyframes tapPulse{50%{filter:brightness(1.25) drop-shadow(0 0 2vmin #FFE9A8);}}
+/* kurtarma sahnesinde parlayan ipucu (telefon dostu: sadece transform) */
+.tapMe{animation:tapPulse 1.4s ease-in-out infinite; will-change:transform;}
+@keyframes tapPulse{50%{transform:translateX(-50%) rotateY(0deg) scale(1.06);}}
 
 /* kucaklaşma */
 .hugPair{animation:hugSway 3s ease-in-out infinite;}
