@@ -25,15 +25,20 @@ window.Storybook = (function () {
   }
   const snd = {
     mee:    () => { tone(430, .28, "triangle", .14, 300); setTimeout(() => tone(380, .22, "triangle", .1, 280), 120); },
+    meeKalin:() => { tone(250, .4, "triangle", .16, 170); setTimeout(() => tone(210, .32, "triangle", .12, 150), 170); },
     miyav:  () => { tone(700, .16, "sine", .12, 950); setTimeout(() => tone(950, .3, "sine", .12, 420), 150); },
     cik:    () => { tone(1200, .09, "sine", .1, 1500); setTimeout(() => tone(1300, .09, "sine", .09, 1600), 110); },
+    gidak:  () => { [0, 110, 220, 380].forEach((d, i) => setTimeout(() => tone(560 - i * 45, .08, "square", .07, 360), d)); setTimeout(() => tone(700, .22, "square", .08, 320), 520); },
+    civil:  () => { tone(1800, .07, "sine", .08, 2300); setTimeout(() => tone(2100, .09, "sine", .07, 1600), 90); setTimeout(() => tone(1900, .07, "sine", .06, 2500), 200); },
+    vizz:   () => { tone(190, .45, "sawtooth", .04, 240); setTimeout(() => tone(210, .3, "sawtooth", .03, 180), 200); },
+    tink:   () => tone(880, .18, "sine", .07, 1400),
     page:   () => tone(520, .12, "sine", .06, 700),
     pop:    () => tone(300, .15, "sine", .1, 600),
     splash: () => tone(900, .25, "sine", .08, 200),
     gum:    () => { tone(120, .35, "square", .12, 60); setTimeout(() => tone(90, .3, "square", .08, 50), 80); },
     yay:    () => { tone(520, .12, "triangle", .1, 780); setTimeout(() => tone(660, .12, "triangle", .1, 880), 130); setTimeout(() => tone(780, .2, "triangle", .1, 1040), 260); }
   };
-  const kindSound = { chick: snd.cik, cat: snd.miyav, sheep: snd.mee, ram: snd.mee };
+  const kindSound = { chick: snd.cik, cat: snd.miyav, sheep: snd.mee, ram: snd.meeKalin, hen: snd.gidak };
 
   /* ---------- karakterler ---------- */
   let CHAR = {};
@@ -70,6 +75,33 @@ window.Storybook = (function () {
     for (let i = 0; i < n; i++)
       s += `<div class="heart" style="left:${left + i * 6 - n * 3}%;bottom:${bottom}%;animation-delay:${(i * .9).toFixed(1)}s">💕</div>`;
     return s;
+  }
+  function flowers(n) {
+    const em = ["🌼", "🌸", "🌷", "🌻"];
+    let s = "";
+    for (let i = 0; i < n; i++) {
+      const left = 4 + (i + Math.random() * .7) * (92 / n), bottom = 14 + Math.random() * 6,
+            sz = (3 + Math.random() * 1.6).toFixed(1);
+      s += `<div class="flower" style="left:${left.toFixed(1)}%;bottom:${bottom.toFixed(1)}%;font-size:${sz}vmin;animation-delay:${(Math.random() * 2.5).toFixed(1)}s">${em[i % em.length]}</div>`;
+    }
+    return s;
+  }
+  function birds(n) {
+    let s = "";
+    for (let i = 0; i < n; i++) {
+      const top = 5 + Math.random() * 18, dur = 16 + Math.random() * 12, delay = -Math.random() * dur;
+      s += `<div class="bird" style="top:${top.toFixed(1)}%;animation-duration:${dur.toFixed(1)}s;animation-delay:${delay.toFixed(1)}s">🐦</div>`;
+    }
+    return s;
+  }
+  function bees(n, left, bottom) {
+    let s = "";
+    for (let i = 0; i < n; i++)
+      s += `<div class="bee" style="left:${(left || 30) + i * 14}%;bottom:${(bottom || 30) + (i % 2) * 5}%;animation-delay:${(i * 1.7).toFixed(1)}s">🐝</div>`;
+    return s;
+  }
+  function fish(left, bottom) {
+    return `<div class="fish" style="left:${left || 45}%;bottom:${bottom || 15}%">🐟</div>`;
   }
 
   /* ---------- kitap kurulumu ---------- */
@@ -131,9 +163,22 @@ window.Storybook = (function () {
       const a = e.target.closest(".actor:not(.locked)");
       if (a) { poke(a); return; }
 
+      const deco = e.target.closest(".butterfly,.flower,.bee,.bird");
+      if (deco) {
+        if (deco.classList.contains("bee")) snd.vizz();
+        else if (deco.classList.contains("bird")) snd.civil();
+        else if (deco.classList.contains("butterfly")) snd.civil();
+        else snd.pop();
+        deco.classList.remove("poked"); void deco.offsetWidth;
+        deco.classList.add("poked");
+        clearTimeout(deco._t);
+        deco._t = setTimeout(() => deco.classList.remove("poked"), 650);
+        return;
+      }
+
       const ca = e.target.closest(".cloudAnimal");
       if (ca) {
-        snd.pop();
+        if (/koyun/i.test(ca.dataset.say || "")) snd.mee(); else snd.pop();
         let b = ca.querySelector(".bubble");
         if (!b) { b = document.createElement("span"); b.className = "bubble"; ca.appendChild(b); }
         b.textContent = ca.dataset.say || "!";
@@ -158,10 +203,24 @@ window.Storybook = (function () {
 
       if (e.target.dataset.act === "start") { show(1); return; }
       if (e.target.dataset.act === "restart") { show(0); return; }
+
+      /* boş gökyüzüne dokununca ışıltı — minikler için sürpriz! */
+      const skyEl = e.target.closest(".sky");
+      if (skyEl) {
+        snd.tink();
+        const r = skyEl.getBoundingClientRect();
+        const sp = document.createElement("div");
+        sp.className = "sparkle";
+        sp.textContent = ["✨", "⭐", "🌟", "💫"][Math.floor(Math.random() * 4)];
+        sp.style.left = ((e.clientX - r.left) / r.width * 100) + "%";
+        sp.style.top = ((e.clientY - r.top) / r.height * 100) + "%";
+        skyEl.appendChild(sp);
+        setTimeout(() => sp.remove(), 950);
+      }
     });
 
     show(0);
   }
 
-  return { chars, actor, clouds, stars, hearts, init, show, poke, snd, tone };
+  return { chars, actor, clouds, stars, hearts, flowers, birds, bees, fish, init, show, poke, snd, tone };
 })();
