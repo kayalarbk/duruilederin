@@ -79,7 +79,42 @@ window.Storybook = (function () {
       src.connect(f).connect(g).connect(ac.destination); src.start(t);
     } catch (e) { /* sessizce devam */ }
   }
-  const snd = {
+  /* ---------- gerçek hayvan kayıtları (Wikimedia Commons, telifsiz/serbest lisans) ----------
+     assets/sounds/*.mp3 — yüklenemezse aşağıdaki sentez sesler yedek olarak devreye girer */
+  const SND_BASE = ((document.currentScript && document.currentScript.src) || "")
+    .replace(/js\/storybook\.js.*$/, "sounds/");
+  const clips = {};
+  ["kuzu", "miyav", "tavuk", "civciv", "kus", "ari"].forEach(n => {
+    const a = new Audio(SND_BASE + n + ".mp3");
+    a.preload = "auto";
+    clips[n] = a;
+  });
+
+  /* kayıttan bir parça çal: o = {at: başlangıç sn, dur: süre sn, rate: hız, vol: ses}
+     dosya henüz hazır değilse false döner → sentez yedeğe düşülür */
+  function clip(name, o) {
+    o = o || {};
+    const base = clips[name];
+    if (!base || base.readyState < 2) return false;
+    const a = base.cloneNode();
+    a.volume = o.vol == null ? .85 : o.vol;
+    if (o.rate) {
+      a.playbackRate = o.rate;
+      try { a.preservesPitch = false; a.mozPreservesPitch = false; a.webkitPreservesPitch = false; } catch (e) {}
+    }
+    if (o.at) a.currentTime = o.at;
+    const p = a.play();
+    if (p && p.catch) p.catch(() => {});
+    if (o.dur) setTimeout(() => {
+      const fade = setInterval(() => {
+        a.volume = Math.max(0, a.volume - .15);
+        if (a.volume <= 0) { clearInterval(fade); a.pause(); }
+      }, 40);
+    }, o.dur * 1000 / (o.rate || 1));
+    return true;
+  }
+
+  const synth = {
     /* kuzu melemesi — "meee": titrek gırtlak + burun rezonansı */
     mee: () => {
       voice({freq: 620, to: 400, dur: .75, vol: .13, trem: 7, tremDepth: .6, formant: 1150, q: 2.2, vib: 14, vibRate: 7});
@@ -125,6 +160,23 @@ window.Storybook = (function () {
     splash: () => { noiseBurst({dur: .3, vol: .12, freq: 2400, q: .8}); tone(900, .25, "sine", .06, 200); },
     gum:    () => { tone(120, .35, "square", .12, 60); setTimeout(() => tone(90, .3, "square", .08, 50), 80); },
     yay:    () => { tone(520, .12, "triangle", .1, 780); setTimeout(() => tone(660, .12, "triangle", .1, 880), 130); setTimeout(() => tone(780, .2, "triangle", .1, 1040), 260); }
+  };
+
+  /* önce gerçek kayıt, hazır değilse sentez yedek */
+  const snd = {
+    mee:      () => { clip("kuzu", {vol: .9}) || synth.mee(); },
+    meeKalin: () => { clip("kuzu", {rate: .62, vol: 1}) || synth.meeKalin(); },
+    miyav:    () => { clip("miyav", {vol: .9}) || synth.miyav(); },
+    cik:      () => { clip("civciv", {at: 9.2, dur: 2.2, vol: .8}) || synth.cik(); },
+    gidak:    () => { clip("tavuk", {at: 3.6, dur: 2.3, vol: .75}) || synth.gidak(); },
+    civil:    () => { clip("kus", {at: 12, dur: 2.2, vol: 1}) || synth.civil(); },
+    vizz:     () => { clip("ari", {at: 6.5, dur: 2.2, vol: .9}) || synth.vizz(); },
+    tink:   synth.tink,
+    page:   synth.page,
+    pop:    synth.pop,
+    splash: synth.splash,
+    gum:    synth.gum,
+    yay:    synth.yay
   };
   const kindSound = { chick: snd.cik, cat: snd.miyav, sheep: snd.mee, ram: snd.meeKalin, hen: snd.gidak };
 
