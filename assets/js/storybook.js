@@ -81,8 +81,7 @@ window.Storybook = (function () {
   }
   /* ---------- gerçek hayvan kayıtları (Wikimedia Commons, telifsiz/serbest lisans) ----------
      assets/sounds/*.mp3 — yüklenemezse aşağıdaki sentez sesler yedek olarak devreye girer */
-  const SND_BASE = ((document.currentScript && document.currentScript.src) || "")
-    .replace(/js\/storybook\.js.*$/, "sounds/");
+  const SND_BASE = "assets/sounds/";
   const clips = {};
   ["kuzu", "miyav", "tavuk", "civciv", "kus", "ari"].forEach(n => {
     const a = new Audio(SND_BASE + n + ".mp3");
